@@ -1,15 +1,14 @@
 package app.config;
 
-import com.mongodb.Mongo;
-import com.mongodb.MongoClient;
-import org.springframework.context.annotation.Bean;
+import com.mongodb.reactivestreams.client.MongoClient;
+import com.mongodb.reactivestreams.client.MongoClients;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
+import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 
 @Configuration
-@EnableMongoRepositories(basePackages = "app.repository")
-public class MongoConfig extends AbstractMongoConfiguration {
+@EnableReactiveMongoRepositories(basePackages = "app.repository")
+public class MongoConfig extends AbstractReactiveMongoConfiguration {
 
     @Override
     public String getDatabaseName() {
@@ -17,9 +16,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
     }
 
     @Override
-    @Bean
-    public Mongo mongo() throws Exception {
-        return new MongoClient("localhost");
+    public MongoClient reactiveMongoClient() {
+        return MongoClients.create();
     }
-
 }

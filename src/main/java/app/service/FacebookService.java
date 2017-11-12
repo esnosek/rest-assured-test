@@ -2,10 +2,11 @@ package app.service;
 
 import app.model.Facebook;
 import app.repository.FacebookRepository;
+import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class FacebookService {
@@ -13,24 +14,24 @@ public class FacebookService {
     @Autowired
     private FacebookRepository facebookRepository;
 
-    public Facebook create(Facebook facebook) {
+    public Flux<Facebook> create(Publisher<Facebook> facebook) {
         return facebookRepository.insert(facebook);
     }
 
-    public Facebook find(String id){
-        return facebookRepository.findOne(id);
+    public Mono<Facebook> find(String id){
+        return facebookRepository.findById(id);
     }
 
-    public List<Facebook> findAll() {
+    public Flux<Facebook> findAll() {
         return facebookRepository.findAll();
     }
 
-    public void delete(String id){
-        facebookRepository.delete(id);
+    public Mono<Void> delete(String id){
+        return facebookRepository.deleteById(id);
     }
 
-    public void deleteAll() {
-        facebookRepository.deleteAll();
+    public Mono<Void> deleteAll() {
+        return facebookRepository.deleteAll();
     }
 
 }

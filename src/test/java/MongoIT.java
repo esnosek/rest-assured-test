@@ -1,3 +1,4 @@
+import app.config.MongoConfig;
 import app.config.WebFluxConfig;
 import app.controller.FacebookController;
 import app.dto.FacebookDto;
@@ -7,11 +8,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import reactor.core.publisher.Mono;
 
-@WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {WebFluxConfig.class, FacebookService.class})
+@ContextConfiguration(classes = {WebFluxConfig.class, MongoConfig.class, FacebookService.class})
 public class MongoIT {
 
     @Autowired
@@ -19,7 +19,7 @@ public class MongoIT {
 
     @Test
     public void testGetFacebookAccount() {
-        facebookController.create(new FacebookDto("name", "13"));
+        facebookController.create(Mono.just(new FacebookDto("namsse", 13)));
     }
 
 }
