@@ -27,7 +27,8 @@ public class FacebookController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Facebook> find(@PathVariable String id){
         Facebook facebook = facebookService.find(id);
-        return new ResponseEntity<>(facebook, HttpStatus.OK);
+        return facebook == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(facebook, HttpStatus.OK);
     }
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
