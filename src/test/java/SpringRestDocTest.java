@@ -1,7 +1,4 @@
 import app.config.WebFluxConfig;
-import app.controller.FacebookController;
-import app.dto.FacebookDto;
-import app.service.FacebookService;
 import nl.tritales.springrestdoc.SpringRestDoc;
 import org.junit.After;
 import org.junit.Before;
