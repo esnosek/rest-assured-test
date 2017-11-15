@@ -9,8 +9,7 @@ public interface BookRepository extends MongoRepository<Book, String> {
 
     List<Book> findByAuthor(String author);
 
-    List<Book> findByYearGreaterThan(Integer from);
+    List<Book> findByYearBetween(Integer from, Integer to);
 
-    List<Book> findByYearLessThan(Integer to);
 }
 

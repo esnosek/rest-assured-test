@@ -45,11 +45,11 @@ public class BookService {
         return bookRepository.findByAuthor(author);
     }
 
-    public List<Book> findByYearGreaterThan(Integer from) {
-        return bookRepository.findByYearGreaterThan(from);
+    public List<Book> findByYearBetween(Integer from, Integer to) {
+        return bookRepository.findByYearBetween(from, to);
     }
 
-    public List<Book> findByYearLessThan(Integer to) {
-        return bookRepository.findByYearGreaterThan(to);
+    public boolean exists(String id) {
+        return bookRepository.exists(id);
     }
 }

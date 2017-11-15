@@ -2,6 +2,7 @@ package app.controller;
 
 import app.dto.BookDto;
 import app.model.Book;
+import app.model.Library;
 import app.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,28 +13,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/books")
+@RequestMapping("")
 public class BookController {
 
     @Autowired
     private BookService bookService;
 
-    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Library> library(@RequestParam(name = "showBooks", required = false) Boolean showBooks){
+        Library library = new Library();
+        if(showBooks != null && showBooks) {
+            List<Book> books = bookService.findAll();
+            library.setBooks(books);
+        }
+        return new ResponseEntity<>(library, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/books", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Book> create(@RequestBody BookDto bookDto){
         Book book = bookService.create(new Book(bookDto.getTitle(), bookDto.getAuthor(), bookDto.getYear()));
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Book> find(@PathVariable String id){
+    @GetMapping(value = "/books/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Book> find(@PathVariable(name = "id") String id){
         Book book = bookService.find(id);
         return book == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                 : new ResponseEntity<>(book, HttpStatus.OK);
     }
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Book>> findAuthor(@RequestParam(required = false) String author){
-        List<Book> books;
+    @GetMapping(value = "/books", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Book>> findAuthor(@RequestParam(name = "author", required = false) String author){
+        List<Book> books = null;
         if(author != null)
             books = bookService.findByAuthor(author);
         else
@@ -41,17 +52,24 @@ public class BookController {
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Book> put(@PathVariable String id, @RequestBody BookDto bookDto){
+    @PutMapping(value = "/books/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Book> put(@PathVariable(name = "id") String id, @RequestBody BookDto bookDto){
         Book book = bookService.put(id, bookDto);
         return book == null ? new ResponseEntity<>(HttpStatus.BAD_REQUEST)
                 : new ResponseEntity<>(book, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Book> delete(@PathVariable String id){
+    @DeleteMapping(value = "/books/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Book> delete(@PathVariable(name = "id") String id){
+        if(!bookService.exists(id))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         bookService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/books", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Book> deleteAll(){
+        bookService.deleteAll();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
