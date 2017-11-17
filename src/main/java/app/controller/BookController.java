@@ -44,7 +44,7 @@ public class BookController {
 
     @GetMapping(value = "/books", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Book>> findAuthor(@RequestParam(name = "author", required = false) String author){
-        List<Book> books = null;
+        List<Book> books;
         if(author != null)
             books = bookService.findByAuthor(author);
         else
